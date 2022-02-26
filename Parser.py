@@ -40,7 +40,7 @@ class Parser:
                 return self.elseBlockStatement()
             elif current['value'] == "for" or current['value'] == "while":
                 return self.forLoop()
-            elif "value" in next and current['type'] == "IDENTIFIER" and next['value'] == "=":
+            elif "value" in next and current['type'] == "DATATYPE":
                 return self.variableAssignment()
             elif current['value'] == "return":
                 return self.returnStatement()
@@ -68,7 +68,8 @@ class Parser:
             type1 = "RETURN_VALUE"
         self.advance()
         self.advance()
-        return ReturnStatement("return",  returnMethodName, returnMethodArgList, returnVal, type1)
+        returnStatement = ReturnStatement("return",  returnMethodName, returnMethodArgList, returnVal, type1)
+        return returnStatement
 
     # 1 != 2
     # 2 == 2
@@ -101,7 +102,8 @@ class Parser:
             self.advance()
         while self.current()['type'] != "RBRACE":
             bodyList.append(self.statements())
-        return IfBlock(conditionVar, conditionOp, conditionVal, bodyList, "IF")
+        ifBlock1 = IfBlock(conditionVar, conditionOp, conditionVal, bodyList, "IF")
+        return ifBlock1
 
 
     def elseBlockStatement(self):
@@ -110,15 +112,20 @@ class Parser:
             self.advance()
         while self.current()['type'] != "RBRACE":
             bodyList.append(self.statements())
-        return ElseBlock(bodyList, "ELSE")
+        else1 = ElseBlock(bodyList, "ELSE")
+        return else1
 
 
     def variableAssignment(self):
+        self.advance()
         varName = self.current()['value']
         self.advance()
         self.advance()
         varValue = self.current()['value']
-        return VariableAssignmentBlock(varName, varValue, "VAR")
+        self.advance()
+        self.advance()
+        var1 = VariableAssignmentBlock(varName, varValue, "VAR")
+        return var1
 
     def forLoop(self):
         bodyList = []
@@ -144,7 +151,8 @@ class Parser:
             self.advance()
         while self.current()['type'] != "RBRACE":
             bodyList.append(self.statements())
-        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "FOR")
+        forLoopBlock = ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "FOR")
+        return forLoopBlock
 
     def whileLoop(self):
         while self.current()['type'] != "IDENTIFIER":
@@ -177,7 +185,8 @@ class Parser:
         while self.current()['type'] != "RBRACE" and self.tokens[self.index + 1]['type'] != "EOF":
             methods.append(self.classMethods())
         self.advance()
-        return ClassDecl(className, methods)
+        classDec = ClassDecl(className, methods)
+        return classDec
 
     def classMethods(self):
         typeOfMethod = None
@@ -198,12 +207,13 @@ class Parser:
             self.advance()
         while self.current()['type'] != "LBRACE":
             self.advance()
-        self.advance()
         if self.current()['type'] != "RBRACE":
-            return Method(methodName, typeOfMethod, self.blockStatement(), arguments_list)
+            method1 = Method(methodName, typeOfMethod, self.blockStatement(), arguments_list)
+            return method1
         else:
             self.advance()
-            return Method(methodName, typeOfMethod, [])
+            method1 = Method(methodName, typeOfMethod, [])
+            return method1
 
 
     def blockStatement(self):
