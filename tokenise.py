@@ -1,5 +1,5 @@
 from gettext import install
-from util import isDigit, isLoop, isAlphaNumeric, isKeyword, isOp
+from util import isDataType, isDigit, isLoop, isAlphaNumeric, isKeyword, isOp
 
 class Scanner :
     tokens = []
@@ -70,6 +70,8 @@ class Scanner :
             if isAlphaNumeric(s.strip()) and not isAlphaNumeric(peek) :
                 if isKeyword(s.strip()) :
                     self.tokens.append({ "type": "KEYWORD", "value": s })
+                elif isDataType(s.strip()) :
+                    self.tokens.append({ "type": "DATATYPE", "value": s })
                 elif isLoop(s.strip()) :
                     self.tokens.append({ "type": "LOOPKEYWORD", "value": s})
                 else :
@@ -101,12 +103,13 @@ class Scanner :
         self.tokens.append({ "type": "EOF" })
         return self.tokens
 
-#
-# with open('javaCodeTest.txt', 'r') as file:
-#     data = file.read().replace('\n', '')
-#
-# print(data)
-# testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
-# print(len(testStr))
-# testFunc = Scanner()
-# print(testFunc.tokenize(data))
+# Read test java code
+with open('javaCodeTest.txt', 'r') as file:
+    data = file.read().replace('\n', '')
+
+# Example java code
+testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
+
+# Tokenise java code string
+testFunc = Scanner()
+print(testFunc.tokenize(data))
