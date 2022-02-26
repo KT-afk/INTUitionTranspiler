@@ -3,10 +3,12 @@ import Parser
 
 # args = process.argv[2]
 # buffer = fs.readFileSync(args).toString()
-testStr = "class Book { addBook() {} removeBook() {} static getOneBook() {} }"
 # str1 = ["if", "(",  "!", "sayHello", "==", "True", ")"]
+with open('javaCodeTest.txt', 'r') as file:
+    data = file.read().replace('\n', '')
+
 scanner = tokenise.Scanner()
-tokens = scanner.tokenize(testStr)
+tokens = scanner.tokenize(data)
 parser = Parser.Parser()
 asts = parser.parse(tokens)
 print(asts)
