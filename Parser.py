@@ -1,6 +1,8 @@
 from contextlib import nullcontext
 import this
 
+from ast import ClassDecl, Method, objCreation
+
 
 class Parser:
 
@@ -73,4 +75,4 @@ class Parser:
         self.advance()
         varName = self.current().value
         self.advance()
-        return ObjCreation(className, varName)
+        return objCreation(className, varName)
