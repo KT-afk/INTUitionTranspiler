@@ -44,7 +44,22 @@ class Scanner :
                 self.tokens.append({ "type": "RBRACE" })
                 s = ""
                 continue
-    
+
+            if s.strip() == "[" :
+                self.tokens.append({ "type": "LSQUARE" })
+                s = ""
+                continue
+
+
+            if s.strip() == "]" :
+                self.tokens.append({ "type": "RSQUARE" })
+                s = ""
+                continue
+
+            if s.strip() == '"' :
+                self.tokens.append({ "type": "QUOTE" })
+                s = ""
+                continue
 
             if isAlphaNumeric(s.strip()) and not isAlphaNumeric(peek) :
                 if isKeyword(s.strip()) :
@@ -66,12 +81,26 @@ class Scanner :
                 self.tokens.append({ "type": "EOL" })
                 s = ""
                 continue
+
+            if s == "," :
+                self.tokens.append({ "type": "COMMA" })
+                s = ""
+                continue
+
+            if s == "." :
+                self.tokens.append({ "type": "CALL" })
+                s = ""
+                continue
             
         self.tokens.append({ "type": "EOF" })
         return self.tokens
 
-
-testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
-print(len(testStr))
-testFunc = Scanner()
-print(testFunc.tokenize(testStr))
+#
+# with open('javaCodeTest.txt', 'r') as file:
+#     data = file.read().replace('\n', '')
+#
+# print(data)
+# testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
+# print(len(testStr))
+# testFunc = Scanner()
+# print(testFunc.tokenize(data))

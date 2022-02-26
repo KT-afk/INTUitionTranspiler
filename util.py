@@ -3,7 +3,7 @@ from ipaddress import v6_int_to_packed
 import math
 
 operators = ["=", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "++"]
-keywords = ["class", "def", "if", "else", "switch", "int"]
+keywords = ["class", "def", "if", "else", "switch", "int", "float", "long", "double", "return"]
 loops = ["while", "for"]
 
 
@@ -12,6 +12,7 @@ def isOp(v):
         if operators[i] == v:
             return True
     return False
+
 
 def isNum(v):
     return not math.isnan(float(v)) and math.isfinite(v)
@@ -27,6 +28,7 @@ def isAlpha(str):
 
 def isAlphaNumeric(str):
     return isAlpha(str) or isDigit(str)
+
 
 def isLoop(l):
     for i in range(len(loops)):
