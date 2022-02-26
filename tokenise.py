@@ -103,13 +103,13 @@ class Scanner :
         self.tokens.append({ "type": "EOF" })
         return self.tokens
 
-# Read test java code
-with open('javaCodeTest.txt', 'r') as file:
-    data = file.read().replace('\n', '')
+# # Read test java code
+# with open('javaCodeTest.txt', 'r') as file:
+#     data = file.read().replace('\n', '')
 
-# Example java code
-testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
+# # Example java code
+# testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
 
-# Tokenise java code string
-testFunc = Scanner()
-print(testFunc.tokenize(data))
+# # Tokenise java code string
+# testFunc = Scanner()
+# print(testFunc.tokenize(data))
