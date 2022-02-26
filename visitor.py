@@ -1,4 +1,4 @@
-from ast import ClassDecl, Method, objCreation
+from ast import ClassDecl, Method, ObjCreationBlock
 
 class Visitor:
     def visitStatements(self, asts):
