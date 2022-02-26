@@ -1,6 +1,6 @@
 from contextlib import nullcontext
 import this
-from ast import ClassDecl, Method, objCreation, ifElseStatement, forLoopBlock
+from ast import ClassDecl, Method, objCreation, ifElseStatement, forLoopBlock, variableAssignmentBlock
 
 
 class Parser:
@@ -27,15 +27,18 @@ class Parser:
 
     def statements(self):
         current = self.current()
-        if current['value'] == "class":
-            return self.classDeclarations()
-        elif "value" in self.tokens[self.index + 3] and self.tokens[self.index + 3]['value'] == "new":
-            return self.objectCreation()
-        elif current['value'] == "if" or current['value'] == "else":
-            return self.ifElseBlockStatement()
-        elif current['value'] == "for" or current['value'] == "while":
-            return self.forLoop()
-
+        next = self.peep()
+        if "value" in self.tokens[self.index]:
+            if current['value'] == "class":
+                return self.classDeclarations()
+            elif "value" in self.tokens[self.index + 3] and self.tokens[self.index + 3]['value'] == "new":
+                return self.objectCreation()
+            elif current['value'] == "if" or current['value'] == "else":
+                return self.ifElseBlockStatement()
+            elif current['value'] == "for" or current['value'] == "while":
+                return self.forLoop()
+            elif current['type'] == "IDENTIFIER" and next['value'] == "=":
+                return self.variableAssignment()
     def expression(self):
         return self.add()
 
@@ -61,6 +64,13 @@ class Parser:
             statements.extend(self.blockStatement())
         return ifElseStatement(self.statements())
 
+    def variableAssignment(self):
+        varName = self.current()['value']
+        self.advance()
+        self.advance()
+        varValue = self.current()['value']
+        return variableAssignmentBlock(varName, varValue)
+
     def forLoop(self):
         while self.current()['type'] != "IDENTIFIER":
             self.advance()
@@ -81,7 +91,29 @@ class Parser:
             self.advance()
         self.advance()
         return forLoopBlock(count_name, count_value, operand, constraint_value, increment)
+    #while(i < 10){
+    #   i += 1
+    # }
+    def whileLoop(self):
+        while self.current()['type'] != "IDENTIFIER":
+            self.advance()
+        count_name = self.current()['value']
+        while self.current()['type'] != "NUM":
+            self.advance()
+        count_value = self.current()['value']
 
+        while self.current()['type'] != "OP":
+            self.advance()
+        operand = self.current()['value']
+        self.advance()
+        constraint_value = self.current()['value']
+        while self.current()['type'] != "OP":
+            self.advance()
+        increment = self.current()['value']
+        while self.current()['type'] != "EOF":
+            self.advance()
+        self.advance()
+        return forLoopBlock(count_name, count_value, operand, constraint_value, increment)
     def classDeclarations(self):
         self.advance()
         className = self.current()['value']
@@ -115,7 +147,7 @@ class Parser:
         self.advance()
         statements = []
         while self.current()['type'] != "RBRACE" and self.tokens[self.index + 1]['type'] != "EOF":
-            statements.extend(self.statements())
+            statements.append(self.statements())
             self.advance()
         self.advance()
         return [statements]
