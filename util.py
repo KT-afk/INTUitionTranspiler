@@ -13,6 +13,7 @@ def isOp(v):
             return True
     return False
 
+
 def isNum(v):
     return not math.isnan(float(v)) and math.isfinite(v)
 
@@ -27,6 +28,7 @@ def isAlpha(str):
 
 def isAlphaNumeric(str):
     return isAlpha(str) or isDigit(str)
+
 
 def isLoop(l):
     for i in range(len(loops)):
