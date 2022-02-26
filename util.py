@@ -2,7 +2,7 @@
 import math
 
 operators = ["=", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!="]
-keywords = ["class", "function", "prototype", "static", "var", "typeof"]
+keywords = ["class", "def", "prototype", "static", "var", "typeof"]
 
 
 def isOp(v):
@@ -21,7 +21,7 @@ def isDigit(str):
 
 
 def isAlpha(str):
-    return (str > "a" and str <= "z") or (str >= "A" and str <= "Z") or str == "_"
+    return (str >= "a" and str <= "z") or (str >= "A" and str <= "Z") or str == "_"
 
 
 def isAlphaNumeric(str):
