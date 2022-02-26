@@ -50,9 +50,12 @@ class Visitor:
             ctx += "\t\t" + body.varName + " = " + body.className + "()\n"
         elif isinstance(body, IfBlock):
             ctx += "\t\tif " + body.conditionVar + " " + body.conditionOp + " " + body.conditionVal + ":\n"
-            for ifbody in body.bodyList:
-                ctx += "\t" + body.visitBody(ifbody)
+            for ifBody in body.bodyList:
+                ctx += "\t" + body.visitBody(ifBody)
         elif isinstance(body, ElseBlock):
             ctx += "\t\telse:\n"
-            for elsebody in body.bodyList:
-                ctx += "\t" + body.visitBody(elsebody)
+            for elseBody in body.bodyList:
+                ctx += "\t" + body.visitBody(elseBody)
+        elif isinstance(body, ReturnStatement):
+            ctx += "\t\treturn " + body.returnString + "\n"
+        return ctx
