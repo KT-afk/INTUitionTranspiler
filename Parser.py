@@ -50,9 +50,25 @@ class Parser:
 
     def returnStatement(self):
         self.advance()
+        returnString =""
+        returnMethodName = ""
+        returnMethodArgList = []
+        returnVal = ""
+        if self.peep()['type'] == "LPAREN":
+            returnMethodName =  self.current()['value']
+            self.advance()
+            while self.current()['type'] != 'RPAREN':
+                self.advance()
+                returnMethodArgList.append(self.current()['value'])
+                self.advance()
+
+            type1 = "RETURN_METHOD"
+        else:
+            returnVal = self.current()['value']
+            type1 = "RETURN_VALUE"
         self.advance()
         self.advance()
-        return ReturnStatement("return " + self.current()['value'], "RETURN")
+        return ReturnStatement("return",  returnMethodName, returnMethodArgList, returnVal, type1)
 
     # 1 != 2
     # 2 == 2
@@ -165,17 +181,26 @@ class Parser:
 
     def classMethods(self):
         typeOfMethod = None
-        if "value" in self.current() and self.current()["value"] == "static":
-            typeOfMethod = self.current()['value']
+        arguments_list = []
+        if self.current()["type"] == "KEYWORD":
+            while self.current()["type"] == "KEYWORD":
+                if "value" in self.current() and self.current()["value"] == "static":
+                    typeOfMethod = self.current()['value']
+                self.advance()
+        else:
             self.advance()
-
         methodName = self.current()['value']
         self.advance()
+        while self.current()['type'] != "RPAREN":
+            self.advance()
+            self.advance()
+            arguments_list.append(self.current()['value'])
+            self.advance()
         while self.current()['type'] != "LBRACE":
             self.advance()
         self.advance()
         if self.current()['type'] != "RBRACE":
-            return Method(methodName, typeOfMethod, self.blockStatement())
+            return Method(methodName, typeOfMethod, self.blockStatement(), arguments_list)
         else:
             self.advance()
             return Method(methodName, typeOfMethod, [])

@@ -35,11 +35,14 @@ class VariableAssignmentBlock(BodyBlock):
         self.var_name = var_name
         self.var_value = var_value
         self.type = type1
-class ReturnStatement(BodyBlock):
-    def __init__(self, returnString, type1):
-        self.returnString = returnString
-        self.type = type1
 
+class ReturnStatement(BodyBlock):
+    def __init__(self, returnString, returnMethodName, returnMethodArgList,returnVal, type1):
+        self.returnString = returnString
+        self.returnMethodName = returnMethodName
+        self.returnMethodArgList = returnMethodArgList
+        self.returnVal = returnVal
+        self.type = type1
 
 class ObjCreationBlock(BodyBlock):
     def __init__(self, className, varName, type1):
