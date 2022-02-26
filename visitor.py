@@ -18,24 +18,27 @@ class Visitor:
         return ctx
 
     def visitMethod(self, method, cls):
+        count = 0
         ctx = "\tdef "
         ctx += method.name
         if method.type != "static":
-            ctx += "(self"
+            ctx += "(self, "
         else:
             ctx += "("
         if method.argument_list:
             for argument in method.argument_list:
-                ctx += ", "
                 ctx += argument
+                if count < len(method.argument_list) - 1:
+                    ctx += ", "
+                count += 1
         ctx += "):\n"
-        bodyList = method.body
+        bodyList = method.body[0]
         for body in bodyList:
             ctx += self.visitBody(body)
         return ctx
 
     def visitBody(self, body):
-        ctx = ""
+        ctx = ''
         if isinstance(body, ForLoopBlock):
             ctx += "\t\tfor " + body.count_name + " in range(" + body.count_value + ", "
             if body.operand == "<=" or body.operand == ">=":
@@ -51,11 +54,21 @@ class Visitor:
         elif isinstance(body, IfBlock):
             ctx += "\t\tif " + body.conditionVar + " " + body.conditionOp + " " + body.conditionVal + ":\n"
             for ifBody in body.bodyList:
-                ctx += "\t" + body.visitBody(ifBody)
+                ctx += "\t" + self.visitBody(ifBody)
         elif isinstance(body, ElseBlock):
             ctx += "\t\telse:\n"
             for elseBody in body.bodyList:
-                ctx += "\t" + body.visitBody(elseBody)
+                ctx += "\t" + self.visitBody(elseBody)
         elif isinstance(body, ReturnStatement):
-            ctx += "\t\treturn " + body.returnString + "\n"
+            if body.returnMethodName:
+                count = 0
+                ctx += "\t\t" + body.returnString + " " + body.returnMethodName + "("
+                for argument in body.returnMethodArgList:
+                    ctx += argument
+                    if count < len(body.returnMethodArgList) - 1:
+                        ctx += ", "
+                    count += 1
+                ctx += ")\n"
+            else:
+                ctx += "\t\t" + body.returnString + " " + body.returnVal + "\n"
         return ctx

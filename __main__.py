@@ -1,5 +1,6 @@
 import tokenise
 import Parser
+from visitor import *
 
 # args = process.argv[2]
 # buffer = fs.readFileSync(args).toString()
@@ -12,7 +13,8 @@ tokens = scanner.tokenize(data)
 parser = Parser.Parser()
 asts = parser.parse(tokens)
 print(asts)
-# result = new Visitor().visitStatements(asts)
+result = Visitor().visitStatements(asts)
+print(result)
 
 # fs.writeFileSync("test/cls-transpiled.js", result);
 # log(args, " successfully transpiled!!");
