@@ -3,9 +3,9 @@ from ipaddress import v6_int_to_packed
 import math
 
 operators = ["=", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "++"]
-keywords = ["class", "def", "if", "else", "switch", "int", "float", "long", "double", "return"]
+keywords = ["class", "if", "else", "switch", "return", "static", "void", "public", "private"]
 loops = ["while", "for"]
-
+datatypes = ["int", "float", "long", "double", "boolean", "String", "char"]
 
 def isOp(v):
     for i in range(len(operators)):
@@ -40,5 +40,11 @@ def isLoop(l):
 def isKeyword(v):
     for i in range(len(keywords)):
         if keywords[i] == v:
+            return True
+    return False
+
+def isDataType(v):
+    for i in range(len(datatypes)):
+        if datatypes[i] == v:
             return True
     return False
