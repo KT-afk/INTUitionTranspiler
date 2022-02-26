@@ -3,7 +3,7 @@ from ipaddress import v6_int_to_packed
 import math
 
 operators = ["=", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "++"]
-keywords = ["class", "def", "if", "else", "switch", "int"]
+keywords = ["class", "def", "if", "else", "switch", "int", "float", "long", "double", "return"]
 loops = ["while", "for"]
 
 
