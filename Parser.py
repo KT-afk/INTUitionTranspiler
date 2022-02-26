@@ -1,7 +1,6 @@
 from contextlib import nullcontext
 import this
-import ast
-from ast import ClassDecl, Method, objCreation, ifElseStatement
+from ast import ClassDecl, Method, objCreation, ifElseStatement, forLoopBlock
 
 
 class Parser:
@@ -23,17 +22,19 @@ class Parser:
     def parse(self, tokens):
         self.tokens = tokens
         while self.current()['type'] != "EOF":
-            self.expr.extend(self.statements())
+            self.expr.append(self.statements())
         return self.expr
 
     def statements(self):
         current = self.current()
         if current['value'] == "class":
             return self.classDeclarations()
-        elif self.tokens[self.index + 3]['value'] == "new":
+        elif "value" in self.tokens[self.index + 3] and self.tokens[self.index + 3]['value'] == "new":
             return self.objectCreation()
         elif current['value'] == "if" or current['value'] == "else":
             return self.ifElseBlockStatement()
+        elif current['value'] == "for" or current['value'] == "while":
+            return self.forLoop()
 
     def expression(self):
         return self.add()
@@ -48,7 +49,6 @@ class Parser:
     # example: if(!sayHello == True)
     # tokens = ["if", "(",  "!", "sayHello", "==", "True", ")"]
     def ifElseBlockStatement(self):
-
         self.advance()
         statements = []
         if self.current()['value'] == "else":
@@ -59,7 +59,28 @@ class Parser:
             while self.current()['type'] == "LPAREN":
                 self.advance()
             statements.extend(self.blockStatement())
-        return ast.ifElseStatement(self.statements())
+        return ifElseStatement(self.statements())
+
+    def forLoop(self):
+        while self.current()['type'] != "IDENTIFIER":
+            self.advance()
+        count_name = self.current()['value']
+        while self.current()['type'] != "NUM":
+            self.advance()
+        count_value = self.current()['value']
+
+        while self.current()['type'] != "OP":
+            self.advance()
+        operand = self.current()['value']
+        self.advance()
+        constraint_value = self.current()['value']
+        while self.current()['type'] != "OP":
+            self.advance()
+        increment = self.current()['value']
+        while self.current()['type'] != "EOF":
+            self.advance()
+        self.advance()
+        return forLoopBlock(count_name, count_value, operand, constraint_value, increment)
 
     def classDeclarations(self):
         self.advance()
@@ -69,14 +90,14 @@ class Parser:
             self.advance()
         methods = []
         while self.current()['type'] != "RBRACE" and self.tokens[self.index + 1]['type'] != "EOF":
-            methods.extend(self.classMethods())
+            methods.append(self.classMethods())
         self.advance()
-        return ast.ClassDecl(className, methods)
+        return ClassDecl(className, methods)
 
     def classMethods(self):
-        type = None
+        typeOfMethod = None
         if "value" in self.current() and self.current()["value"] == "static":
-            type = self.current()['value']
+            typeOfMethod = self.current()['value']
             self.advance()
 
         methodName = self.current()['value']
@@ -85,9 +106,10 @@ class Parser:
             self.advance()
         self.advance()
         if self.current()['type'] != "RBRACE":
-            return ast.Method(methodName, type, self.blockStatement())
+            return Method(methodName, typeOfMethod, self.blockStatement())
         else:
-            return ast.Method(methodName, type, "")
+            self.advance()
+            return Method(methodName, typeOfMethod, [])
 
     def blockStatement(self):
         self.advance()
@@ -105,7 +127,7 @@ class Parser:
         self.advance()
         varName = self.current()['value']
         self.advance()
-        return ast.objCreation(className, varName)
+        return objCreation(className, varName)
 
 
 # str1 = ["if", "(",  "!", "sayHello", "==", "True", ")"]

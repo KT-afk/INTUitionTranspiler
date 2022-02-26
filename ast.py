@@ -14,6 +14,13 @@ class Method:
         self.type = type
         self.body = body
 
+class forLoopBlock:
+    def __init__(self, count_name, count_value, operand, constraint_value, increment):
+        self.count_name = count_name
+        self.count_value = count_value
+        self.operand = operand
+        self.constraint_value = constraint_value
+        self.increment = increment
 
 class objCreation:
     def __init__(self, className, varName):
