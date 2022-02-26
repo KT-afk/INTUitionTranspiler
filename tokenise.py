@@ -1,5 +1,5 @@
 from gettext import install
-from util import isDigit, isAlpha, isAlphaNumeric, isKeyword, isOp
+from util import isDigit, isLoop, isAlphaNumeric, isKeyword, isOp
 
 class Scanner :
     tokens = []
@@ -49,12 +49,14 @@ class Scanner :
             if isAlphaNumeric(s.strip()) and not isAlphaNumeric(peek) :
                 if isKeyword(s.strip()) :
                     self.tokens.append({ "type": "KEYWORD", "value": s })
+                elif isLoop(s.strip()) :
+                    self.tokens.append({ "type": "LOOPKEYWORD", "value": s})
                 else :
                     self.tokens.append({ "type": "IDENTIFIER", "value": s })
                 s = ""
                 continue
 
-            if isOp(s.strip()) and not isOp(peek) :
+            if isOp(s.strip()) and (not isOp(peek)) :
                 self.tokens.append({ "type": "OP", "value": s.strip() })
                 s = ""
                 continue
@@ -69,7 +71,7 @@ class Scanner :
         return self.tokens
 
 
-testStr = "class Book { addBook() {} removeBook() {} static getOneBook() {} }"
+testStr = "class Book { addBook() {}    removeBook() {} static getOneBook() {} } for (int i = 0; i < 10; i++) {}"
 print(len(testStr))
 testFunc = Scanner()
 print(testFunc.tokenize(testStr))
