@@ -1,4 +1,4 @@
-from ast import *
+from AbsSynTree import ClassDecl, Method, BodyBlock, ForLoopBlock, VariableAssignmentBlock, ReturnStatement, ObjCreationBlock, IfBlock, ElseBlock
 
 class Visitor:
     def visitStatements(self, asts):

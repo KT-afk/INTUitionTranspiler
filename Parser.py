@@ -1,6 +1,6 @@
 from contextlib import nullcontext
 import this
-from ast import ClassDecl, Method, ObjCreationBlock, IfBlock, ForLoopBlock, VariableAssignmentBlock, BodyBlock, \
+from AbsSynTree import ClassDecl, Method, ObjCreationBlock, IfBlock, ForLoopBlock, VariableAssignmentBlock, BodyBlock, \
     ElseBlock, ReturnStatement
 
 
