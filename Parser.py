@@ -1,6 +1,7 @@
 from contextlib import nullcontext
 import this
-from ast import ClassDecl, Method, ObjCreationBlock, IfElseBlock, ForLoopBlock, VariableAssignmentBlock
+from ast import ClassDecl, Method, ObjCreationBlock, IfBlock, ForLoopBlock, VariableAssignmentBlock, BodyBlock, \
+    ElseBlock
 
 
 class Parser:
@@ -33,8 +34,10 @@ class Parser:
                 return self.classDeclarations()
             elif "value" in self.tokens[self.index + 3] and self.tokens[self.index + 3]['value'] == "new":
                 return self.objectCreation()
-            elif current['value'] == "if" or current['value'] == "else":
-                return self.ifElseBlockStatement()
+            elif current['value'] == "if":
+                return self.ifBlockStatement()
+            elif current['value'] == "else":
+                return self.elseBlockStatement()
             elif current['value'] == "for" or current['value'] == "while":
                 return self.forLoop()
             elif current['type'] == "IDENTIFIER" and next['value'] == "=":
@@ -50,27 +53,43 @@ class Parser:
     # if !hello || !bye
     # if !hey && end
     # split if into multiple tokens
-    # example: if(!sayHello == True)
+    # example: if(!sayHello == True) if (arr[mid] == x)
+    # 				return mid;
     # tokens = ["if", "(",  "!", "sayHello", "==", "True", ")"]
-    def ifElseBlockStatement(self):
+    def ifBlockStatement(self):
+        bodyList = []
         self.advance()
-        statements = []
-        if self.current()['value'] == "else":
-            while self.current()['type'] == "LBRACE":
-                self.advance()
-            statements.extend(self.blockStatement())
-        else:
-            while self.current()['type'] == "LPAREN":
-                self.advance()
-            statements.extend(self.blockStatement())
-        return IfElseBlock(self.statements())
+        while self.current()['type'] == "LPAREN":
+            self.advance()
+        conditionVar = self.current()['value']
+        self.advance()
+        conditionOp = self.current()['value']
+        self.advance()
+        conditionVal = self.current()['value']
+        self.advance()
+        self.advance()
+        while self.current()['type'] == "LBRACE":
+            self.advance()
+        while self.current()['type'] != "RBRACE":
+            bodyList.append(self.statements())
+        return IfBlock(conditionVar, conditionOp, conditionVal, bodyList, "IF")
+
+
+    def elseBlockStatement(self):
+        bodyList = []
+        while self.current()['type'] == "LBRACE":
+            self.advance()
+        while self.current()['type'] != "RBRACE":
+            bodyList.append(self.statements())
+        return ElseBlock(bodyList, "ELSE")
+
 
     def variableAssignment(self):
         varName = self.current()['value']
         self.advance()
         self.advance()
         varValue = self.current()['value']
-        return VariableAssignmentBlock(varName, varValue)
+        return VariableAssignmentBlock(varName, varValue, "VAR")
 
     def forLoop(self):
         while self.current()['type'] != "IDENTIFIER":
@@ -91,10 +110,8 @@ class Parser:
         while self.current()['type'] != "EOF":
             self.advance()
         self.advance()
-        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment)
-    #while(i < 10){
-    #   i += 1
-    # }
+        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "FOR")
+
     def whileLoop(self):
         while self.current()['type'] != "IDENTIFIER":
             self.advance()
@@ -114,7 +131,7 @@ class Parser:
         while self.current()['type'] != "EOF":
             self.advance()
         self.advance()
-        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment)
+        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "WHILE")
 
     def classDeclarations(self):
         self.advance()
@@ -145,6 +162,7 @@ class Parser:
             self.advance()
             return Method(methodName, typeOfMethod, [])
 
+
     def blockStatement(self):
         self.advance()
         statements = []
@@ -161,7 +179,7 @@ class Parser:
         self.advance()
         varName = self.current()['value']
         self.advance()
-        return ObjCreationBlock(className, varName)
+        return ObjCreationBlock(className, varName, "OBJ")
 
 
 # str1 = ["if", "(",  "!", "sayHello", "==", "True", ")"]

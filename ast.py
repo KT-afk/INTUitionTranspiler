@@ -16,34 +16,44 @@ class Method:
 
 
 class BodyBlock:
-    def __init__(self, listOfVar, listOfIfElse, listOfForLoop, listOfWhileLoop):
-        self.listOfVar = listOfVar
-        self.listOfIfElse = listOfIfElse
-        self.listOfForLoop = self.listOfForLoop
-        self.listOfWhileLoop = self.listOfWhileLoop
+    def __init__(self, type1):
+        self.type = type1
 
 
 class ForLoopBlock(BodyBlock):
-    def __init__(self, count_name, count_value, operand, constraint_value, increment):
+    def __init__(self, count_name, count_value, operand, constraint_value, increment, type1):
         self.count_name = count_name
         self.count_value = count_value
         self.operand = operand
         self.constraint_value = constraint_value
         self.increment = increment
+        self.type = type1
 
 
 class VariableAssignmentBlock(BodyBlock):
-    def __init__(self, var_name, var_value):
+    def __init__(self, var_name, var_value, type1):
         self.var_name = var_name
         self.var_value = var_value
+        self.type = type1
 
 
 class ObjCreationBlock(BodyBlock):
-    def __init__(self, className, varName):
+    def __init__(self, className, varName, type1):
         self.className = className
         self.varName = varName
+        self.type = type1
 
 
-class IfElseBlock(BodyBlock):
-    def __init__(self, statements):
-        self.statements = statements
+class IfBlock(BodyBlock):
+    def __init__(self, conditionVar, conditionOp, conditionVal, bodyList, type1):
+        self.conditionVar = conditionVar
+        self.conditionOp = conditionOp
+        self.conditionVal = conditionVal
+        self.bodyList = bodyList
+        self.type = type1
+
+
+class ElseBlock(BodyBlock):
+    def __init__(self, bodyList, type1):
+        self.bodyList = bodyList
+        self.type = type1
