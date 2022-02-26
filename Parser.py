@@ -1,7 +1,7 @@
 from contextlib import nullcontext
 import this
 from ast import ClassDecl, Method, ObjCreationBlock, IfBlock, ForLoopBlock, VariableAssignmentBlock, BodyBlock, \
-    ElseBlock
+    ElseBlock, ReturnStatement
 
 
 class Parser:
@@ -40,11 +40,19 @@ class Parser:
                 return self.elseBlockStatement()
             elif current['value'] == "for" or current['value'] == "while":
                 return self.forLoop()
-            elif current['type'] == "IDENTIFIER" and next['value'] == "=":
+            elif "value" in next and current['type'] == "IDENTIFIER" and next['value'] == "=":
                 return self.variableAssignment()
+            elif current['value'] == "return":
+                return self.returnStatement()
 
     def expression(self):
         return self.add()
+
+    def returnStatement(self):
+        self.advance()
+        self.advance()
+        self.advance()
+        return ReturnStatement("return " + self.current()['value'], "RETURN")
 
     # 1 != 2
     # 2 == 2
@@ -63,6 +71,11 @@ class Parser:
             self.advance()
         conditionVar = self.current()['value']
         self.advance()
+        if self.current()['type'] == "LSQUARE":
+            self.advance()
+            conditionVar = conditionVar + "[" + self.current()['value'] + "]"
+            self.advance()
+            self.advance()
         conditionOp = self.current()['value']
         self.advance()
         conditionVal = self.current()['value']
@@ -92,6 +105,7 @@ class Parser:
         return VariableAssignmentBlock(varName, varValue, "VAR")
 
     def forLoop(self):
+        bodyList = []
         while self.current()['type'] != "IDENTIFIER":
             self.advance()
         count_name = self.current()['value']
@@ -110,6 +124,10 @@ class Parser:
         while self.current()['type'] != "EOF":
             self.advance()
         self.advance()
+        while self.current()['type'] == "LBRACE":
+            self.advance()
+        while self.current()['type'] != "RBRACE":
+            bodyList.append(self.statements())
         return ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "FOR")
 
     def whileLoop(self):
