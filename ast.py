@@ -19,3 +19,8 @@ class objCreation:
     def __init__(self, className, varName):
         self.clsname = className
         self.varName = varName
+
+
+class ifElseStatement:
+    def __init__(self, statements) -> None:
+        self.statements = statements
