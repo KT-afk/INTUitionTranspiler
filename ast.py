@@ -16,7 +16,7 @@ class Method:
         self.argument_list = argument_list
 
 
-class Body:
+class BodyBlock:
     def __init__(self, listOfVar, listOfIfElse, listOfForLoop, listOfWhileLoop):
         self.listOfVar = listOfVar
         self.listOfIfElse = listOfIfElse
@@ -31,7 +31,7 @@ class forLoopBlock:
         self.constraint_value = constraint_value
         self.increment = increment
 
-class variableAssignment:
+class variableAssignmentBlock:
     def __init__(self, var_name, var_value):
         self.var_name = var_name
         self.var_value = var_value

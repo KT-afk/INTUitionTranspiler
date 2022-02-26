@@ -1,6 +1,6 @@
 from contextlib import nullcontext
 import this
-from ast import ClassDecl, Method, objCreation, ifElseStatement, forLoopBlock
+from ast import ClassDecl, Method, objCreation, ifElseStatement, forLoopBlock, variableAssignmentBlock
 
 
 class Parser:
@@ -27,6 +27,7 @@ class Parser:
 
     def statements(self):
         current = self.current()
+        next = self.peep()
         if "value" in self.tokens[self.index]:
             if current['value'] == "class":
                 return self.classDeclarations()
@@ -36,7 +37,8 @@ class Parser:
                 return self.ifElseBlockStatement()
             elif current['value'] == "for" or current['value'] == "while":
                 return self.forLoop()
-
+            elif current['type'] == "IDENTIFIER" and next['value'] == "=":
+                return self.variableAssignment()
     def expression(self):
         return self.add()
 
@@ -61,6 +63,13 @@ class Parser:
                 self.advance()
             statements.extend(self.blockStatement())
         return ifElseStatement(self.statements())
+
+    def variableAssignment(self):
+        varName = self.current()['value']
+        self.advance()
+        self.advance()
+        varValue = self.current()['value']
+        return variableAssignmentBlock(varName, varValue)
 
     def forLoop(self):
         while self.current()['type'] != "IDENTIFIER":
