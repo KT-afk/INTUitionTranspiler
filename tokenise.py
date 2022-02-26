@@ -9,7 +9,8 @@ class Scanner :
   
 
     def tokenize(self, strCode): 
-        s = ""; 
+        s = ""
+        newString = True
 
         for index in range(len(strCode)) :
             s += strCode[index]
@@ -57,7 +58,12 @@ class Scanner :
                 continue
 
             if s.strip() == '"' :
-                self.tokens.append({ "type": "QUOTE" })
+                if newString == True:
+                    self.tokens.append({ "type": "LQUOTE" })
+                    newString = False
+                else :
+                    self.tokens.append({ "type": "RQUOTE" })
+                    newString = True
                 s = ""
                 continue
 
