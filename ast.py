@@ -1,4 +1,3 @@
-
 class ClassDecl:
     def __init__(self, clsName, methods):
         self.clsName = clsName
@@ -23,7 +22,8 @@ class BodyBlock:
         self.listOfForLoop = self.listOfForLoop
         self.listOfWhileLoop = self.listOfWhileLoop
 
-class forLoopBlock:
+
+class ForLoopBlock(BodyBlock):
     def __init__(self, count_name, count_value, operand, constraint_value, increment):
         self.count_name = count_name
         self.count_value = count_value
@@ -31,16 +31,19 @@ class forLoopBlock:
         self.constraint_value = constraint_value
         self.increment = increment
 
-class variableAssignmentBlock:
+
+class VariableAssignmentBlock(BodyBlock):
     def __init__(self, var_name, var_value):
         self.var_name = var_name
         self.var_value = var_value
 
-class objCreation:
+
+class ObjCreationBlock(BodyBlock):
     def __init__(self, className, varName):
         self.className = className
         self.varName = varName
 
-class ifElseStatement:
+
+class IfElseBlock(BodyBlock):
     def __init__(self, statements):
         self.statements = statements

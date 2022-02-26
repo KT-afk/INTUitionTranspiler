@@ -1,6 +1,6 @@
 from contextlib import nullcontext
 import this
-from ast import ClassDecl, Method, objCreation, ifElseStatement, forLoopBlock, variableAssignmentBlock
+from ast import ClassDecl, Method, ObjCreationBlock, IfElseBlock, ForLoopBlock, VariableAssignmentBlock
 
 
 class Parser:
@@ -39,6 +39,7 @@ class Parser:
                 return self.forLoop()
             elif current['type'] == "IDENTIFIER" and next['value'] == "=":
                 return self.variableAssignment()
+
     def expression(self):
         return self.add()
 
@@ -62,14 +63,14 @@ class Parser:
             while self.current()['type'] == "LPAREN":
                 self.advance()
             statements.extend(self.blockStatement())
-        return ifElseStatement(self.statements())
+        return IfElseBlock(self.statements())
 
     def variableAssignment(self):
         varName = self.current()['value']
         self.advance()
         self.advance()
         varValue = self.current()['value']
-        return variableAssignmentBlock(varName, varValue)
+        return VariableAssignmentBlock(varName, varValue)
 
     def forLoop(self):
         while self.current()['type'] != "IDENTIFIER":
@@ -90,7 +91,7 @@ class Parser:
         while self.current()['type'] != "EOF":
             self.advance()
         self.advance()
-        return forLoopBlock(count_name, count_value, operand, constraint_value, increment)
+        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment)
     #while(i < 10){
     #   i += 1
     # }
@@ -113,7 +114,8 @@ class Parser:
         while self.current()['type'] != "EOF":
             self.advance()
         self.advance()
-        return forLoopBlock(count_name, count_value, operand, constraint_value, increment)
+        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment)
+
     def classDeclarations(self):
         self.advance()
         className = self.current()['value']
@@ -159,7 +161,7 @@ class Parser:
         self.advance()
         varName = self.current()['value']
         self.advance()
-        return objCreation(className, varName)
+        return ObjCreationBlock(className, varName)
 
 
 # str1 = ["if", "(",  "!", "sayHello", "==", "True", ")"]
