@@ -1,4 +1,5 @@
 
+from ipaddress import v6_int_to_packed
 import math
 
 operators = ["=", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "++"]
@@ -10,9 +11,7 @@ def isOp(v):
     for i in range(len(operators)):
         if operators[i] == v:
             return True
-        return False
-
-print(isOp("<"))
+    return False
 
 def isNum(v):
     return not math.isnan(float(v)) and math.isfinite(v)
@@ -34,6 +33,7 @@ def isLoop(l):
         if loops[i] == l:
             return True
     return False
+
 
 def isKeyword(v):
     for i in range(len(keywords)):
