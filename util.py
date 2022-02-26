@@ -1,4 +1,5 @@
 
+from ipaddress import v6_int_to_packed
 import math
 
 operators = ["=", "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "++"]
@@ -11,9 +12,6 @@ def isOp(v):
         if operators[i] == v:
             return True
     return False
-
-
-print(isOp("<"))
 
 
 def isNum(v):
