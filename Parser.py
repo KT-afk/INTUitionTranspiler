@@ -98,13 +98,10 @@ class Parser:
         conditionVal = self.current()['value']
         self.advance()
         self.advance()
-        count = 0
         while self.current()['type'] == "LBRACE":
             self.advance()
-            count += 1
-        while self.current()['type'] != "RBRACE" and count > 0:
+        while self.current()['type'] != "RBRACE":
             bodyList.append(self.statements())
-            count -= 1
         ifBlock1 = IfBlock(conditionVar, conditionOp, conditionVal, bodyList, "IF")
         return ifBlock1
 
