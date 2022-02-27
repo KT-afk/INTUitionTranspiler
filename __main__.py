@@ -2,6 +2,8 @@ import tokenise
 import Parser
 import tkinter as tk
 from tkinter import filedialog
+from visitor import Visitor
+
 # 'Text' class is used to display the input-field
 
 window = tk.Tk()
@@ -36,7 +38,7 @@ def translate():
     tokens = scanner.tokenize(data)
     parser = Parser.Parser()
     asts = parser.parse(tokens)
-
+    data = Visitor().visitStatements(asts)
     t2.insert('1.0', data)
 
 # press button to upload file
