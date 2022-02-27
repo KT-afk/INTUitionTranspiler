@@ -34,13 +34,17 @@ class Visitor:
         ctx += "):\n"
         bodyList = method.body[0]
         for body in bodyList:
-            ctx += self.visitBody(body)
+            ctx += self.visitBody(body, 0)
         return ctx
 
-    def visitBody(self, body):
+    def visitBody(self, body, level):
         ctx = ''
+        if body:
+            ctx += "\t\t"
+            for i in range(level):
+                ctx += "\t"
         if isinstance(body, ForLoopBlock):
-            ctx += "\t\tfor " + body.count_name + " in range(" + body.count_value + ", "
+            ctx += "for " + body.count_name + " in range(" + body.count_value + ", "
             if body.operand == "<=" or body.operand == ">=":
                 constraint = body.constraint_value + 1
                 ctx += constraint
@@ -48,21 +52,21 @@ class Visitor:
                 ctx += body.constraint_value
             ctx += ", " + body.increment + "):\n"
         elif isinstance(body, VariableAssignmentBlock):
-            ctx += "\t\t" + body.var_name + " = " + body.var_value + "\n"
+            ctx += body.var_name + " = " + body.var_value + "\n"
         elif isinstance(body, ObjCreationBlock):
-            ctx += "\t\t" + body.varName + " = " + body.className + "()\n"
+            ctx += body.varName + " = " + body.className + "()\n"
         elif isinstance(body, IfBlock):
-            ctx += "\t\tif " + body.conditionVar + " " + body.conditionOp + " " + body.conditionVal + ":\n"
+            ctx += "if " + body.conditionVar + " " + body.conditionOp + " " + body.conditionVal + ":\n"
             for ifBody in body.bodyList:
-                ctx += "\t" + self.visitBody(ifBody)
+                ctx += self.visitBody(ifBody, level + 1)
         elif isinstance(body, ElseBlock):
-            ctx += "\t\telse:\n"
+            ctx += "else:\n"
             for elseBody in body.bodyList:
-                ctx += "\t" + self.visitBody(elseBody)
+                ctx += self.visitBody(elseBody, level + 1)
         elif isinstance(body, ReturnStatement):
             if body.returnMethodName:
                 count = 0
-                ctx += "\t\t" + body.returnString + " " + body.returnMethodName + "("
+                ctx += body.returnString + " " + body.returnMethodName + "("
                 for argument in body.returnMethodArgList:
                     ctx += argument
                     if count < len(body.returnMethodArgList) - 1:
@@ -70,5 +74,5 @@ class Visitor:
                     count += 1
                 ctx += ")\n"
             else:
-                ctx += "\t\t" + body.returnString + " " + body.returnVal + "\n"
+                ctx += body.returnString + " " + body.returnVal + "\n"
         return ctx
