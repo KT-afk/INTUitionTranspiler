@@ -1,5 +1,20 @@
 import tokenise
 import Parser
+import tkinter as tk
+from tkinter import filedialog
+# 'Text' class is used to display the input-field
+
+window = tk.Tk()
+
+# title of window, window size
+window.title("Java-Python Translator")
+window.geometry('860x550')
+
+
+# instruction labels
+ins1 = tk.Label(window, text = "Input your Java script here!", width=50, height=2).grid(row =0, column = 3, sticky = 'w')
+
+ins2 = tk.Label(window, text = "Your Python script:", width=50, height=2).grid(row =0, column = 7, sticky = 'n')
 
 # 'Text' class is used to display the input-field
 
