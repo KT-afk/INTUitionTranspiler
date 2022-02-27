@@ -21,6 +21,7 @@ class BinarySearch {
 		BinarySearch ob = new BinarySearch();
 		int x = 10;
 		int result = ob.binarySearch(arr, 0, n, x);
+
 	}
 }
 

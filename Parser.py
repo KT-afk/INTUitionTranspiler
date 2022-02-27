@@ -154,26 +154,7 @@ class Parser:
         forLoopBlock = ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "FOR")
         return forLoopBlock
 
-    def whileLoop(self):
-        while self.current()['type'] != "IDENTIFIER":
-            self.advance()
-        count_name = self.current()['value']
-        while self.current()['type'] != "NUM":
-            self.advance()
-        count_value = self.current()['value']
 
-        while self.current()['type'] != "OP":
-            self.advance()
-        operand = self.current()['value']
-        self.advance()
-        constraint_value = self.current()['value']
-        while self.current()['type'] != "OP":
-            self.advance()
-        increment = self.current()['value']
-        while self.current()['type'] != "EOF":
-            self.advance()
-        self.advance()
-        return ForLoopBlock(count_name, count_value, operand, constraint_value, increment, "WHILE")
 
     def classDeclarations(self):
         self.advance()
